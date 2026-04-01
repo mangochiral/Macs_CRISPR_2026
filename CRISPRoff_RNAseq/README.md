@@ -1,0 +1,4 @@
+- Differential expression analysis using DESeq2 of macrophages treated with CRISPRoff eVLPs targeting CD45, CD14 or CD81
+- Input files: BAM files obtained from Plasmidsaurus
+- Sample sheet: samples.csv in metadata
+- 
