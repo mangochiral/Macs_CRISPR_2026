@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>CRISPResso2</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="CRISPResso2: Analysis of genome editing outcomes from deep sequencing data">
+    <meta name="author" content="Kendell Clement and Luca Pinello">
+    <link href='https://fonts.googleapis.com/css?family=Montserrat|Ranga:700' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" integrity="sha512-GQGU0fMMi238uA+a/bdWJfpUGKUkBdgfFdgBm72SUQ6BeyWjoY/ton0tEjH+OSH9iP4Dfh+7HM0I9f5eR0L/4w==" crossorigin="anonymous" referrerpolicy="no-referrer" />    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.css" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <style>
+      body {
+        font-family: 'Montserrat', sans-serif !important;
+      
+      }
+      @media (max-width:1015px)
+      {
+        #crispresso_h
+        {
+          font-size:5rem;
+          font-weight:300;
+          line-height:1.2;
+        }
+        #left_help_div
+        {
+          display:none
+        }
+        #top_help_div
+        {
+          display:block
+        }
+      }
+      @media (min-width:1015px)
+      {
+        #crispresso_h
+        {
+          font-size:8rem;
+          font-weight:300;
+          line-height:1.2;
+        }
+        #left_help_div
+        {
+          display:block
+        }
+        #top_help_div
+        {
+          display:none
+        }
+      }
+    </style>
+
+
+    <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+    Remove this if you use the .htaccess -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+    <!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+    
+    <link rel="shortcut icon" href="http://crispresso.pinellolab.org/static/favicon.ico" />
+    
+
+    <!-- Optional JavaScript -->  
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+
+  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+  
+
+<style>
+.nav-tabs.amp-header {
+  border-bottom:none !important;
+}
+
+.card-header.amp-header {
+  border-bottom:none !important;
+}
+.nav-tabs.amp-header .nav-link.active {
+  background-color:lightsteelblue;
+  border-bottom:lightsteelblue;
+}
+
+.tab-content.amp-body {
+  background-color:lightsteelblue;
+}
+
+@media print {
+   .tab-content > .tab-pane {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+		margin-bottom: 2em !important;
+		page-break-inside: avoid;
+  }
+  .nav-tabs {
+    display:none !important;
+    visibility:hidden !important;
+  }
+  .tab-content.amp-body {
+    background-color:transparent !important;
+  	border:None !important;
+  }
+}
+@media only screen and (max-width: 600px) {
+	.jumbotron img {
+		width:100%
+	}
+}
+</style>
+
+
+
+  </head>
+
+  <body class="m-2">
+    
+
+  
+  
+  <div class="container">
+      <div class="row pb-2">
+        <div class="col-sm-1"></div>
+        
+          <div class="col-sm-3 crispresso_cup"> <a href='https://crispresso2.pinellolab.org'><img class='img-fluid' src="https://crispresso.pinellolab.partners.org/static/imgs/CRISPResso_justcup.png" width="80%"></a>
+        
+          </div>
+        <div class="col-sm-7" >
+          <a href="https://crispresso2.pinellolab.org" style="text-decoration:none !important; color:rgb(33, 37, 41)"><h1 id='crispresso_h' style="font-family:'Ranga', sans-serif">CRISPResso2 </h1></a>
+          <h3 style="margin-top: -0.5em;padding-right: 2em;">Analysis of genome editing outcomes from deep sequencing data</h3>
+        </div>
+        <div class="col-sm-1">
+        </div>
+      </div>
+
+
+    
+
+      <div id='top_help_div'>
+        <div class="row">
+          <div class="col-sm-1"></div>
+          <div class='col-sm-10 pb-2 crispresso_body_div'>
+           
+          </div>
+          <div class="col-sm-1"></div>
+        </div>
+      </div>
+
+      
+<div class="row">
+<div class="col-sm-1"></div>
+<div class="col-sm-10">
+
+	<div class="jumbotron" style="background:rgba(0,0,0,0.0); padding:0px" >
+		<div id='jumbotron_content' >
+
+          
+            <div class='card text-center mb-2'>
+              <div class='card-header'>
+                <h5 id="CRISPResso2_Batch_Output">CRISPResso Batch Output<br/>KO_run</h5>
+              </div>
+              <div class='card-body p-0'>
+                <div class="list-group list-group-flush" style="max-height: 25vh; overflow-y: scroll;">
+              
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_CD14_g1_D1.html" class="list-group-item list-group-item-action" id="CD14_g1_D1">CD14_g1_D1</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_CD14_g1_D2.html" class="list-group-item list-group-item-action" id="CD14_g1_D2">CD14_g1_D2</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_CD14_g1_D3.html" class="list-group-item list-group-item-action" id="CD14_g1_D3">CD14_g1_D3</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_CD14_g1_D4.html" class="list-group-item list-group-item-action" id="CD14_g1_D4">CD14_g1_D4</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_CD14_g1_D5.html" class="list-group-item list-group-item-action" id="CD14_g1_D5">CD14_g1_D5</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_CD14_g1_D6.html" class="list-group-item list-group-item-action" id="CD14_g1_D6">CD14_g1_D6</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_CD14_g2_D1.html" class="list-group-item list-group-item-action" id="CD14_g2_D1">CD14_g2_D1</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_CD14_g2_D2.html" class="list-group-item list-group-item-action" id="CD14_g2_D2">CD14_g2_D2</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_CD14_g2_D3.html" class="list-group-item list-group-item-action" id="CD14_g2_D3">CD14_g2_D3</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_CD14_g2_D4.html" class="list-group-item list-group-item-action" id="CD14_g2_D4">CD14_g2_D4</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_CD14_g2_D5.html" class="list-group-item list-group-item-action" id="CD14_g2_D5">CD14_g2_D5</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_CD14_g2_D6.html" class="list-group-item list-group-item-action" id="CD14_g2_D6">CD14_g2_D6</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_DUSP1_g1_D1.html" class="list-group-item list-group-item-action" id="DUSP1_g1_D1">DUSP1_g1_D1</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_DUSP1_g1_D2.html" class="list-group-item list-group-item-action" id="DUSP1_g1_D2">DUSP1_g1_D2</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_DUSP1_g1_D3.html" class="list-group-item list-group-item-action" id="DUSP1_g1_D3">DUSP1_g1_D3</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_DUSP1_g1_D4.html" class="list-group-item list-group-item-action" id="DUSP1_g1_D4">DUSP1_g1_D4</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_DUSP1_g1_D5.html" class="list-group-item list-group-item-action" id="DUSP1_g1_D5">DUSP1_g1_D5</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_DUSP1_g1_D6.html" class="list-group-item list-group-item-action" id="DUSP1_g1_D6">DUSP1_g1_D6</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_DUSP1_g2_D1.html" class="list-group-item list-group-item-action" id="DUSP1_g2_D1">DUSP1_g2_D1</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_DUSP1_g2_D2.html" class="list-group-item list-group-item-action" id="DUSP1_g2_D2">DUSP1_g2_D2</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_DUSP1_g2_D3.html" class="list-group-item list-group-item-action" id="DUSP1_g2_D3">DUSP1_g2_D3</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_DUSP1_g2_D4.html" class="list-group-item list-group-item-action" id="DUSP1_g2_D4">DUSP1_g2_D4</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_DUSP1_g2_D5.html" class="list-group-item list-group-item-action" id="DUSP1_g2_D5">DUSP1_g2_D5</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_DUSP1_g2_D6.html" class="list-group-item list-group-item-action" id="DUSP1_g2_D6">DUSP1_g2_D6</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_FOS_g1_D1.html" class="list-group-item list-group-item-action" id="FOS_g1_D1">FOS_g1_D1</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_FOS_g1_D2.html" class="list-group-item list-group-item-action" id="FOS_g1_D2">FOS_g1_D2</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_FOS_g1_D3.html" class="list-group-item list-group-item-action" id="FOS_g1_D3">FOS_g1_D3</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_FOS_g1_D4.html" class="list-group-item list-group-item-action" id="FOS_g1_D4">FOS_g1_D4</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_FOS_g1_D5.html" class="list-group-item list-group-item-action" id="FOS_g1_D5">FOS_g1_D5</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_FOS_g1_D6.html" class="list-group-item list-group-item-action" id="FOS_g1_D6">FOS_g1_D6</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_FOS_g2_D1.html" class="list-group-item list-group-item-action" id="FOS_g2_D1">FOS_g2_D1</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_FOS_g2_D2.html" class="list-group-item list-group-item-action" id="FOS_g2_D2">FOS_g2_D2</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_FOS_g2_D3.html" class="list-group-item list-group-item-action" id="FOS_g2_D3">FOS_g2_D3</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_FOS_g2_D4.html" class="list-group-item list-group-item-action" id="FOS_g2_D4">FOS_g2_D4</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_FOS_g2_D5.html" class="list-group-item list-group-item-action" id="FOS_g2_D5">FOS_g2_D5</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_FOS_g2_D6.html" class="list-group-item list-group-item-action" id="FOS_g2_D6">FOS_g2_D6</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MAP3K8_g1_D1.html" class="list-group-item list-group-item-action" id="MAP3K8_g1_D1">MAP3K8_g1_D1</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MAP3K8_g1_D2.html" class="list-group-item list-group-item-action" id="MAP3K8_g1_D2">MAP3K8_g1_D2</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MAP3K8_g1_D3.html" class="list-group-item list-group-item-action" id="MAP3K8_g1_D3">MAP3K8_g1_D3</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MAP3K8_g1_D4.html" class="list-group-item list-group-item-action" id="MAP3K8_g1_D4">MAP3K8_g1_D4</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MAP3K8_g1_D5.html" class="list-group-item list-group-item-action" id="MAP3K8_g1_D5">MAP3K8_g1_D5</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MAP3K8_g1_D6.html" class="list-group-item list-group-item-action" id="MAP3K8_g1_D6">MAP3K8_g1_D6</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MAP3K8_g2_D1.html" class="list-group-item list-group-item-action" id="MAP3K8_g2_D1">MAP3K8_g2_D1</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MAP3K8_g2_D2.html" class="list-group-item list-group-item-action" id="MAP3K8_g2_D2">MAP3K8_g2_D2</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MAP3K8_g2_D3.html" class="list-group-item list-group-item-action" id="MAP3K8_g2_D3">MAP3K8_g2_D3</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MAP3K8_g2_D4.html" class="list-group-item list-group-item-action" id="MAP3K8_g2_D4">MAP3K8_g2_D4</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MAP3K8_g2_D5.html" class="list-group-item list-group-item-action" id="MAP3K8_g2_D5">MAP3K8_g2_D5</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MAP3K8_g2_D6.html" class="list-group-item list-group-item-action" id="MAP3K8_g2_D6">MAP3K8_g2_D6</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MITF_g1_D1.html" class="list-group-item list-group-item-action" id="MITF_g1_D1">MITF_g1_D1</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MITF_g1_D2.html" class="list-group-item list-group-item-action" id="MITF_g1_D2">MITF_g1_D2</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MITF_g1_D3.html" class="list-group-item list-group-item-action" id="MITF_g1_D3">MITF_g1_D3</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MITF_g1_D4.html" class="list-group-item list-group-item-action" id="MITF_g1_D4">MITF_g1_D4</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MITF_g1_D5.html" class="list-group-item list-group-item-action" id="MITF_g1_D5">MITF_g1_D5</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MITF_g1_D6.html" class="list-group-item list-group-item-action" id="MITF_g1_D6">MITF_g1_D6</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MITF_g2_D1.html" class="list-group-item list-group-item-action" id="MITF_g2_D1">MITF_g2_D1</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MITF_g2_D2.html" class="list-group-item list-group-item-action" id="MITF_g2_D2">MITF_g2_D2</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MITF_g2_D3.html" class="list-group-item list-group-item-action" id="MITF_g2_D3">MITF_g2_D3</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MITF_g2_D4.html" class="list-group-item list-group-item-action" id="MITF_g2_D4">MITF_g2_D4</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MITF_g2_D5.html" class="list-group-item list-group-item-action" id="MITF_g2_D5">MITF_g2_D5</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_MITF_g2_D6.html" class="list-group-item list-group-item-action" id="MITF_g2_D6">MITF_g2_D6</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TF_lib_plasmid.html" class="list-group-item list-group-item-action" id="TF_lib_plasmid">TF_lib_plasmid</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TICAM2_g1_D1.html" class="list-group-item list-group-item-action" id="TICAM2_g1_D1">TICAM2_g1_D1</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TICAM2_g1_D2.html" class="list-group-item list-group-item-action" id="TICAM2_g1_D2">TICAM2_g1_D2</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TICAM2_g1_D3.html" class="list-group-item list-group-item-action" id="TICAM2_g1_D3">TICAM2_g1_D3</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TICAM2_g1_D4.html" class="list-group-item list-group-item-action" id="TICAM2_g1_D4">TICAM2_g1_D4</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TICAM2_g1_D5.html" class="list-group-item list-group-item-action" id="TICAM2_g1_D5">TICAM2_g1_D5</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TICAM2_g1_D6.html" class="list-group-item list-group-item-action" id="TICAM2_g1_D6">TICAM2_g1_D6</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TICAM2_g2_D1.html" class="list-group-item list-group-item-action" id="TICAM2_g2_D1">TICAM2_g2_D1</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TICAM2_g2_D2.html" class="list-group-item list-group-item-action" id="TICAM2_g2_D2">TICAM2_g2_D2</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TICAM2_g2_D3.html" class="list-group-item list-group-item-action" id="TICAM2_g2_D3">TICAM2_g2_D3</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TICAM2_g2_D4.html" class="list-group-item list-group-item-action" id="TICAM2_g2_D4">TICAM2_g2_D4</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TICAM2_g2_D5.html" class="list-group-item list-group-item-action" id="TICAM2_g2_D5">TICAM2_g2_D5</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TICAM2_g2_D6.html" class="list-group-item list-group-item-action" id="TICAM2_g2_D6">TICAM2_g2_D6</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TLR4_g1_D1.html" class="list-group-item list-group-item-action" id="TLR4_g1_D1">TLR4_g1_D1</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TLR4_g1_D2.html" class="list-group-item list-group-item-action" id="TLR4_g1_D2">TLR4_g1_D2</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TLR4_g1_D3.html" class="list-group-item list-group-item-action" id="TLR4_g1_D3">TLR4_g1_D3</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TLR4_g1_D4.html" class="list-group-item list-group-item-action" id="TLR4_g1_D4">TLR4_g1_D4</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TLR4_g1_D5.html" class="list-group-item list-group-item-action" id="TLR4_g1_D5">TLR4_g1_D5</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TLR4_g1_D6.html" class="list-group-item list-group-item-action" id="TLR4_g1_D6">TLR4_g1_D6</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TLR4_g2_D1.html" class="list-group-item list-group-item-action" id="TLR4_g2_D1">TLR4_g2_D1</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TLR4_g2_D2.html" class="list-group-item list-group-item-action" id="TLR4_g2_D2">TLR4_g2_D2</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TLR4_g2_D3.html" class="list-group-item list-group-item-action" id="TLR4_g2_D3">TLR4_g2_D3</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TLR4_g2_D4.html" class="list-group-item list-group-item-action" id="TLR4_g2_D4">TLR4_g2_D4</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TLR4_g2_D5.html" class="list-group-item list-group-item-action" id="TLR4_g2_D5">TLR4_g2_D5</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TLR4_g2_D6.html" class="list-group-item list-group-item-action" id="TLR4_g2_D6">TLR4_g2_D6</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNFAIP3_g1_D1.html" class="list-group-item list-group-item-action" id="TNFAIP3_g1_D1">TNFAIP3_g1_D1</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNFAIP3_g1_D2.html" class="list-group-item list-group-item-action" id="TNFAIP3_g1_D2">TNFAIP3_g1_D2</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNFAIP3_g1_D3.html" class="list-group-item list-group-item-action" id="TNFAIP3_g1_D3">TNFAIP3_g1_D3</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNFAIP3_g1_D4.html" class="list-group-item list-group-item-action" id="TNFAIP3_g1_D4">TNFAIP3_g1_D4</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNFAIP3_g1_D5.html" class="list-group-item list-group-item-action" id="TNFAIP3_g1_D5">TNFAIP3_g1_D5</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNFAIP3_g1_D6.html" class="list-group-item list-group-item-action" id="TNFAIP3_g1_D6">TNFAIP3_g1_D6</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNFAIP3_g2_D1.html" class="list-group-item list-group-item-action" id="TNFAIP3_g2_D1">TNFAIP3_g2_D1</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNFAIP3_g2_D2.html" class="list-group-item list-group-item-action" id="TNFAIP3_g2_D2">TNFAIP3_g2_D2</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNFAIP3_g2_D3.html" class="list-group-item list-group-item-action" id="TNFAIP3_g2_D3">TNFAIP3_g2_D3</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNFAIP3_g2_D4.html" class="list-group-item list-group-item-action" id="TNFAIP3_g2_D4">TNFAIP3_g2_D4</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNFAIP3_g2_D5.html" class="list-group-item list-group-item-action" id="TNFAIP3_g2_D5">TNFAIP3_g2_D5</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNFAIP3_g2_D6.html" class="list-group-item list-group-item-action" id="TNFAIP3_g2_D6">TNFAIP3_g2_D6</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNF_g1_D1.html" class="list-group-item list-group-item-action" id="TNF_g1_D1">TNF_g1_D1</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNF_g1_D2.html" class="list-group-item list-group-item-action" id="TNF_g1_D2">TNF_g1_D2</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNF_g1_D3.html" class="list-group-item list-group-item-action" id="TNF_g1_D3">TNF_g1_D3</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNF_g1_D4.html" class="list-group-item list-group-item-action" id="TNF_g1_D4">TNF_g1_D4</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNF_g1_D5.html" class="list-group-item list-group-item-action" id="TNF_g1_D5">TNF_g1_D5</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNF_g1_D6.html" class="list-group-item list-group-item-action" id="TNF_g1_D6">TNF_g1_D6</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNF_g2_D1.html" class="list-group-item list-group-item-action" id="TNF_g2_D1">TNF_g2_D1</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNF_g2_D2.html" class="list-group-item list-group-item-action" id="TNF_g2_D2">TNF_g2_D2</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNF_g2_D3.html" class="list-group-item list-group-item-action" id="TNF_g2_D3">TNF_g2_D3</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNF_g2_D4.html" class="list-group-item list-group-item-action" id="TNF_g2_D4">TNF_g2_D4</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNF_g2_D5.html" class="list-group-item list-group-item-action" id="TNF_g2_D5">TNF_g2_D5</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_TNF_g2_D6.html" class="list-group-item list-group-item-action" id="TNF_g2_D6">TNF_g2_D6</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_Undetermined.html" class="list-group-item list-group-item-action" id="Undetermined">Undetermined</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_ZFP36_g1_D1.html" class="list-group-item list-group-item-action" id="ZFP36_g1_D1">ZFP36_g1_D1</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_ZFP36_g1_D2.html" class="list-group-item list-group-item-action" id="ZFP36_g1_D2">ZFP36_g1_D2</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_ZFP36_g1_D3.html" class="list-group-item list-group-item-action" id="ZFP36_g1_D3">ZFP36_g1_D3</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_ZFP36_g1_D4.html" class="list-group-item list-group-item-action" id="ZFP36_g1_D4">ZFP36_g1_D4</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_ZFP36_g1_D5.html" class="list-group-item list-group-item-action" id="ZFP36_g1_D5">ZFP36_g1_D5</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_ZFP36_g1_D6.html" class="list-group-item list-group-item-action" id="ZFP36_g1_D6">ZFP36_g1_D6</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_ZFP36_g2_D1.html" class="list-group-item list-group-item-action" id="ZFP36_g2_D1">ZFP36_g2_D1</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_ZFP36_g2_D2.html" class="list-group-item list-group-item-action" id="ZFP36_g2_D2">ZFP36_g2_D2</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_ZFP36_g2_D3.html" class="list-group-item list-group-item-action" id="ZFP36_g2_D3">ZFP36_g2_D3</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_ZFP36_g2_D4.html" class="list-group-item list-group-item-action" id="ZFP36_g2_D4">ZFP36_g2_D4</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_ZFP36_g2_D5.html" class="list-group-item list-group-item-action" id="ZFP36_g2_D5">ZFP36_g2_D5</a>
+                
+	      <a href="CRISPRessoBatch_on_KO_run/CRISPResso_on_ZFP36_g2_D6.html" class="list-group-item list-group-item-action" id="ZFP36_g2_D6">ZFP36_g2_D6</a>
+                
+              </div>
+            </div>
+            </div>
+          
+
+          
+
+          
+            <div class='card text-center mb-2'>
+              <div class='card-header'>
+                <h5 id="nucleotide-header">Nucleotide percentages around guides</h5>
+              </div>
+              <div class='card-body'>
+                
+                  <h5>sgRNA: ATAAGTCAATAATATCATCG Amplicon: Reference</h5>
+                  <div id="fig_summary_ReferenceNucleotide_percentage_quilt_around_sgRNA_ATAAGTCAATAATATCATCG">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/ReferenceNucleotide_percentage_quilt_around_sgRNA_ATAAGTCAATAATATCATCG.pdf"><img src="CRISPRessoBatch_on_KO_run/ReferenceNucleotide_percentage_quilt_around_sgRNA_ATAAGTCAATAATATCATCG.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base around the guide ATAAGTCAATAATATCATCG for the amplicon Reference</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>sgRNA: TAAGCGTAAGCATAGCCATG Amplicon: Reference_2</h5>
+                  <div id="fig_summary_Reference_2Nucleotide_percentage_quilt_around_sgRNA_TAAGCGTAAGCATAGCCATG">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_2Nucleotide_percentage_quilt_around_sgRNA_TAAGCGTAAGCATAGCCATG.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_2Nucleotide_percentage_quilt_around_sgRNA_TAAGCGTAAGCATAGCCATG.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base around the guide TAAGCGTAAGCATAGCCATG for the amplicon Reference_2</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_2.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_2.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>sgRNA: CCAGGGGATCAGGAGAACAT Amplicon: Reference_3</h5>
+                  <div id="fig_summary_Reference_3Nucleotide_percentage_quilt_around_sgRNA_CCAGGGGATCAGGAGAACAT">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_3Nucleotide_percentage_quilt_around_sgRNA_CCAGGGGATCAGGAGAACAT.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_3Nucleotide_percentage_quilt_around_sgRNA_CCAGGGGATCAGGAGAACAT.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base around the guide CCAGGGGATCAGGAGAACAT for the amplicon Reference_3</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_3.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_3.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>sgRNA: TCGCCCACGACACGTTGCGT Amplicon: Reference_4</h5>
+                  <div id="fig_summary_Reference_4Nucleotide_percentage_quilt_around_sgRNA_TCGCCCACGACACGTTGCGT">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_4Nucleotide_percentage_quilt_around_sgRNA_TCGCCCACGACACGTTGCGT.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_4Nucleotide_percentage_quilt_around_sgRNA_TCGCCCACGACACGTTGCGT.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base around the guide TCGCCCACGACACGTTGCGT for the amplicon Reference_4</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_4.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_4.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>sgRNA: CCTATGAACTTTATCCAACC Amplicon: Reference_5</h5>
+                  <div id="fig_summary_Reference_5Nucleotide_percentage_quilt_around_sgRNA_CCTATGAACTTTATCCAACC">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_5Nucleotide_percentage_quilt_around_sgRNA_CCTATGAACTTTATCCAACC.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_5Nucleotide_percentage_quilt_around_sgRNA_CCTATGAACTTTATCCAACC.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base around the guide CCTATGAACTTTATCCAACC for the amplicon Reference_5</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_5.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_5.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>sgRNA: GCTGACTGATACACTCCAAG Amplicon: Reference_6</h5>
+                  <div id="fig_summary_Reference_6Nucleotide_percentage_quilt_around_sgRNA_GCTGACTGATACACTCCAAG">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_6Nucleotide_percentage_quilt_around_sgRNA_GCTGACTGATACACTCCAAG.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_6Nucleotide_percentage_quilt_around_sgRNA_GCTGACTGATACACTCCAAG.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base around the guide GCTGACTGATACACTCCAAG for the amplicon Reference_6</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_6.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_6.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>sgRNA: GGAGCTGAGAGATAACCAGC Amplicon: Reference_7</h5>
+                  <div id="fig_summary_Reference_7Nucleotide_percentage_quilt_around_sgRNA_GGAGCTGAGAGATAACCAGC">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_7Nucleotide_percentage_quilt_around_sgRNA_GGAGCTGAGAGATAACCAGC.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_7Nucleotide_percentage_quilt_around_sgRNA_GGAGCTGAGAGATAACCAGC.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base around the guide GGAGCTGAGAGATAACCAGC for the amplicon Reference_7</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_7.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_7.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>sgRNA: TATGCCATGAGTGCTCAGAG Amplicon: Reference_8</h5>
+                  <div id="fig_summary_Reference_8Nucleotide_percentage_quilt_around_sgRNA_TATGCCATGAGTGCTCAGAG">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_8Nucleotide_percentage_quilt_around_sgRNA_TATGCCATGAGTGCTCAGAG.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_8Nucleotide_percentage_quilt_around_sgRNA_TATGCCATGAGTGCTCAGAG.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base around the guide TATGCCATGAGTGCTCAGAG for the amplicon Reference_8</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_8.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_8.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>sgRNA: GCAAACAGTCGACCCCCATG Amplicon: Reference_9</h5>
+                  <div id="fig_summary_Reference_9Nucleotide_percentage_quilt_around_sgRNA_GCAAACAGTCGACCCCCATG">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_9Nucleotide_percentage_quilt_around_sgRNA_GCAAACAGTCGACCCCCATG.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_9Nucleotide_percentage_quilt_around_sgRNA_GCAAACAGTCGACCCCCATG.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base around the guide GCAAACAGTCGACCCCCATG for the amplicon Reference_9</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_9.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_9.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>sgRNA: GGAGTACGCTAGCACACGCA Amplicon: Reference_10</h5>
+                  <div id="fig_summary_Reference_10Nucleotide_percentage_quilt_around_sgRNA_GGAGTACGCTAGCACACGCA">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_10Nucleotide_percentage_quilt_around_sgRNA_GGAGTACGCTAGCACACGCA.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_10Nucleotide_percentage_quilt_around_sgRNA_GGAGTACGCTAGCACACGCA.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base around the guide GGAGTACGCTAGCACACGCA for the amplicon Reference_10</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_10.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_10.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>sgRNA: AGAGTTCCGTCTTGTATTTG Amplicon: Reference_11</h5>
+                  <div id="fig_summary_Reference_11Nucleotide_percentage_quilt_around_sgRNA_AGAGTTCCGTCTTGTATTTG">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_11Nucleotide_percentage_quilt_around_sgRNA_AGAGTTCCGTCTTGTATTTG.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_11Nucleotide_percentage_quilt_around_sgRNA_AGAGTTCCGTCTTGTATTTG.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base around the guide AGAGTTCCGTCTTGTATTTG for the amplicon Reference_11</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_11.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_11.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>sgRNA: TTGGGGTAAAAGGCACAGTG Amplicon: Reference_12</h5>
+                  <div id="fig_summary_Reference_12Nucleotide_percentage_quilt_around_sgRNA_TTGGGGTAAAAGGCACAGTG">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_12Nucleotide_percentage_quilt_around_sgRNA_TTGGGGTAAAAGGCACAGTG.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_12Nucleotide_percentage_quilt_around_sgRNA_TTGGGGTAAAAGGCACAGTG.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base around the guide TTGGGGTAAAAGGCACAGTG for the amplicon Reference_12</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_12.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_12.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>sgRNA: GTAGTAAGAGAGGCTATCCC Amplicon: Reference_13</h5>
+                  <div id="fig_summary_Reference_13Nucleotide_percentage_quilt_around_sgRNA_GTAGTAAGAGAGGCTATCCC">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_13Nucleotide_percentage_quilt_around_sgRNA_GTAGTAAGAGAGGCTATCCC.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_13Nucleotide_percentage_quilt_around_sgRNA_GTAGTAAGAGAGGCTATCCC.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base around the guide GTAGTAAGAGAGGCTATCCC for the amplicon Reference_13</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_13.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_13.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>sgRNA: TGACACATGGTCATTAGACT Amplicon: Reference_14</h5>
+                  <div id="fig_summary_Reference_14Nucleotide_percentage_quilt_around_sgRNA_TGACACATGGTCATTAGACT">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_14Nucleotide_percentage_quilt_around_sgRNA_TGACACATGGTCATTAGACT.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_14Nucleotide_percentage_quilt_around_sgRNA_TGACACATGGTCATTAGACT.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base around the guide TGACACATGGTCATTAGACT for the amplicon Reference_14</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_14.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_14.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>sgRNA: ACTAACCTGATCGTAGAGTG Amplicon: Reference_15</h5>
+                  <div id="fig_summary_Reference_15Nucleotide_percentage_quilt_around_sgRNA_ACTAACCTGATCGTAGAGTG">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_15Nucleotide_percentage_quilt_around_sgRNA_ACTAACCTGATCGTAGAGTG.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_15Nucleotide_percentage_quilt_around_sgRNA_ACTAACCTGATCGTAGAGTG.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base around the guide ACTAACCTGATCGTAGAGTG for the amplicon Reference_15</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_15.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_15.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>sgRNA: CCCGTGCCATCCGACCATGG Amplicon: Reference_16</h5>
+                  <div id="fig_summary_Reference_16Nucleotide_percentage_quilt_around_sgRNA_CCCGTGCCATCCGACCATGG">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_16Nucleotide_percentage_quilt_around_sgRNA_CCCGTGCCATCCGACCATGG.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_16Nucleotide_percentage_quilt_around_sgRNA_CCCGTGCCATCCGACCATGG.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base around the guide CCCGTGCCATCCGACCATGG for the amplicon Reference_16</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_16.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_16.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>sgRNA: CTGTCCTTCAGGGTCACCAA Amplicon: Reference_17</h5>
+                  <div id="fig_summary_Reference_17Nucleotide_percentage_quilt_around_sgRNA_CTGTCCTTCAGGGTCACCAA">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_17Nucleotide_percentage_quilt_around_sgRNA_CTGTCCTTCAGGGTCACCAA.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_17Nucleotide_percentage_quilt_around_sgRNA_CTGTCCTTCAGGGTCACCAA.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base around the guide CTGTCCTTCAGGGTCACCAA for the amplicon Reference_17</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_17.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_17.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>sgRNA: ACCACATACAGCAAGCCCAA Amplicon: Reference_18</h5>
+                  <div id="fig_summary_Reference_18Nucleotide_percentage_quilt_around_sgRNA_ACCACATACAGCAAGCCCAA">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_18Nucleotide_percentage_quilt_around_sgRNA_ACCACATACAGCAAGCCCAA.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_18Nucleotide_percentage_quilt_around_sgRNA_ACCACATACAGCAAGCCCAA.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base around the guide ACCACATACAGCAAGCCCAA for the amplicon Reference_18</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_18.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_18.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>sgRNA: TGTAAATGCTGTCTGCCACA Amplicon: Reference_19</h5>
+                  <div id="fig_summary_Reference_19Nucleotide_percentage_quilt_around_sgRNA_TGTAAATGCTGTCTGCCACA">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_19Nucleotide_percentage_quilt_around_sgRNA_TGTAAATGCTGTCTGCCACA.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_19Nucleotide_percentage_quilt_around_sgRNA_TGTAAATGCTGTCTGCCACA.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base around the guide TGTAAATGCTGTCTGCCACA for the amplicon Reference_19</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_19.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_19.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>sgRNA: AGAGCTCTTACCTACAACAT Amplicon: Reference_20</h5>
+                  <div id="fig_summary_Reference_20Nucleotide_percentage_quilt_around_sgRNA_AGAGCTCTTACCTACAACAT">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_20Nucleotide_percentage_quilt_around_sgRNA_AGAGCTCTTACCTACAACAT.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_20Nucleotide_percentage_quilt_around_sgRNA_AGAGCTCTTACCTACAACAT.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base around the guide AGAGCTCTTACCTACAACAT for the amplicon Reference_20</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_20.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_20.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+              </div>
+            </div>
+          
+
+          
+            <div class='card text-center mb-2'>
+              <div class='card-header'>
+                <h5 id="nucleotide-header-full-amplicon">Nucleotide percentages in the entire amplicon</h5>
+              </div>
+              <div class='card-body'>
+                
+                  <h5>Amplicon: Reference</h5>
+                  <div id="fig_summary_ReferenceNucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/ReferenceNucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/ReferenceNucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Reference</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5></h5>
+                  <div id="fig_summary_InferredNucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/InferredNucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/InferredNucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Inferred</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Inferred.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Inferred.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>Amplicon: Reference_2</h5>
+                  <div id="fig_summary_Reference_2Nucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_2Nucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_2Nucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Reference_2</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_2.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_2.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>Amplicon: Reference_3</h5>
+                  <div id="fig_summary_Reference_3Nucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_3Nucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_3Nucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Reference_3</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_3.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_3.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>Amplicon: Reference_4</h5>
+                  <div id="fig_summary_Reference_4Nucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_4Nucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_4Nucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Reference_4</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_4.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_4.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>Amplicon: Reference_5</h5>
+                  <div id="fig_summary_Reference_5Nucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_5Nucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_5Nucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Reference_5</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_5.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_5.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>Amplicon: Reference_6</h5>
+                  <div id="fig_summary_Reference_6Nucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_6Nucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_6Nucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Reference_6</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_6.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_6.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>Amplicon: Reference_7</h5>
+                  <div id="fig_summary_Reference_7Nucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_7Nucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_7Nucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Reference_7</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_7.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_7.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>Amplicon: Reference_8</h5>
+                  <div id="fig_summary_Reference_8Nucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_8Nucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_8Nucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Reference_8</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_8.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_8.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>Amplicon: Reference_9</h5>
+                  <div id="fig_summary_Reference_9Nucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_9Nucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_9Nucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Reference_9</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_9.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_9.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>Amplicon: Reference_10</h5>
+                  <div id="fig_summary_Reference_10Nucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_10Nucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_10Nucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Reference_10</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_10.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_10.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5></h5>
+                  <div id="fig_summary_Inferred_2Nucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Inferred_2Nucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/Inferred_2Nucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Inferred_2</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Inferred_2.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Inferred_2.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>Amplicon: Reference_11</h5>
+                  <div id="fig_summary_Reference_11Nucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_11Nucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_11Nucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Reference_11</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_11.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_11.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>Amplicon: Reference_12</h5>
+                  <div id="fig_summary_Reference_12Nucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_12Nucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_12Nucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Reference_12</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_12.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_12.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>Amplicon: Reference_13</h5>
+                  <div id="fig_summary_Reference_13Nucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_13Nucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_13Nucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Reference_13</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_13.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_13.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>Amplicon: Reference_14</h5>
+                  <div id="fig_summary_Reference_14Nucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_14Nucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_14Nucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Reference_14</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_14.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_14.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>Amplicon: Reference_15</h5>
+                  <div id="fig_summary_Reference_15Nucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_15Nucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_15Nucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Reference_15</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_15.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_15.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>Amplicon: Reference_16</h5>
+                  <div id="fig_summary_Reference_16Nucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_16Nucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_16Nucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Reference_16</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_16.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_16.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>Amplicon: Reference_17</h5>
+                  <div id="fig_summary_Reference_17Nucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_17Nucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_17Nucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Reference_17</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_17.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_17.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>Amplicon: Reference_18</h5>
+                  <div id="fig_summary_Reference_18Nucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_18Nucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_18Nucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Reference_18</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_18.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_18.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>Amplicon: Reference_19</h5>
+                  <div id="fig_summary_Reference_19Nucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_19Nucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_19Nucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Reference_19</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_19.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_19.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+                  <h5>Amplicon: Reference_20</h5>
+                  <div id="fig_summary_Reference_20Nucleotide_percentage_quilt">
+    
+        
+            <a href="CRISPRessoBatch_on_KO_run/Reference_20Nucleotide_percentage_quilt.pdf"><img src="CRISPRessoBatch_on_KO_run/Reference_20Nucleotide_percentage_quilt.png" width='70%'></a>
+        
+    
+    <label class="labelpadding">Composition of each base for the amplicon Reference_20</label>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_20.Nucleotide_frequency_summary.txt">Nucleotide frequencies</a></small></p>
+    
+        <p class="m-0"><small>Data: <a href="CRISPRessoBatch_on_KO_run/Reference_20.MODIFICATION_FREQUENCY_SUMMARY.txt">Modification frequencies</a></small></p>
+    
+    <br>
+</div>
+                
+              </div>
+            </div>
+          
+
+          
+
+          
+
+          
+
+          
+
+          </div>
+
+        </div>
+
+
+        <div align="center" class='p-3'>
+  
+  <button class='btn btn-primary hidden-print' onclick='window.print();'><i class="fas fa-print"></i> Print</button>
+</div>
+
+	</div>
+    <div class="col-sm-1"></div>
+</div>
+
+
+      
+      <div class="row">
+      <div class="col-sm-1"></div>
+      <footer class="col-sm-10 crispresso_body_div screen-only py-5">
+        <p class="text-center">
+      If you like CRISPResso2 please support us by citing it in your work: <br>
+          Clement K, Rees H, Canver MC, Gehrke JM, Farouni R, Hsu JY, Cole MA, Liu DR, Joung JK, Bauer DE, Pinello L.<br>
+          <a href="https://rdcu.be/boxVG" target="_blank">CRISPResso2 provides accurate and rapid genome editing sequence analysis. </a><br>
+          Nat Biotechnol. 2019 Mar; 37(3):224-226. doi: 10.1038/s41587-019-0032-3. PubMed PMID: 30809026.
+        </p>
+        <p class="text-center"><small> &copy; Copyright <a href="http://pinellolab.org">Kendell Clement and Luca Pinello</a></small></p>
+        <p class="text-center">
+          <small>
+        <a href="https://twitter.com/intent/tweet?text=CRISPResso2%20provides%20accurate%20and%20rapid%20genome%20editing%20sequence%20analysis%20%40kendellclement%20%40lucapinello%20%23CRISPR%20%23CRISPResso2"
+          class="twitter-share-button" data-via="kendellclement" data-size="large" data-count="none" data-hashtags="CRISPR" data-url="http://crispresso2.pinellolab.org">Tweet about CRISPresso2!</a>
+        </small>
+        </p>
+
+      </footer>
+      <div class="col-sm-1"></div>
+    </div>
+    
+    </div>
+    
+
+
+  </body>
+
+</html>
