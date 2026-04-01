@@ -1,0 +1,275 @@
+
+##250429
+##GSVA for subset-specific genes
+
+##0. data curation from Jimmy's paper
+##identify top 300 up-regulated genes in CD14CTX
+
+
+wd="/oak/stanford/groups/pritch/users/mineto/workstation/250425_Hyuncheol"
+setwd(wd)
+library(tidyverse)
+library(readxl)
+data<-read_excel("data/geneset/CD14CTXvsCD14APC.xlsx")
+data<-as.data.frame(data)
+colnames(data)<-data[1,]
+data<-data[-1,]
+data$padj<-as.numeric(data$padj)
+data<-data[order(data$padj),]
+data$logfoldchange<-as.numeric(data$logfoldchange)
+data_f<-na.omit(data[data$logfoldchange>0.3,])
+
+genes<-data_f$gene[1:300]
+
+write.table(as.data.frame(genes), "data/geneset/CD14CTX_markers.txt", row.names=F, sep="\t", col.names=F, quote=F)
+
+
+
+wd="/oak/stanford/groups/pritch/users/mineto/workstation/250425_Hyuncheol"
+setwd(wd)
+library(tidyverse)
+library(readxl)
+data<-read_excel("data/geneset/CD14CTXvsCD14APC.xlsx")
+data<-as.data.frame(data)
+colnames(data)<-data[1,]
+data<-data[-1,]
+data$padj<-as.numeric(data$padj)
+data<-data[order(data$padj),]
+data$logfoldchange<-as.numeric(data$logfoldchange)
+data_f<-na.omit(data[data$logfoldchange< -0.2,])
+
+genes<-data_f$gene[1:300]
+
+write.table(as.data.frame(genes), "data/geneset/CD14APC_markers.txt", row.names=F, sep="\t", col.names=F, quote=F)
+
+
+##
+wd="/oak/stanford/groups/pritch/users/mineto/workstation/250425_Hyuncheol"
+cd $wd
+vi data/geneset/M1_markers.txt
+``
+IL23 
+TNF 
+CXCL9 
+CXCL10 
+CXCL11 
+CD86 
+IL1A 
+IL1B 
+IL6 
+CCL5 
+IRF5 
+IRF1 
+CD40 
+IDO1 
+KYNU 
+CCR7
+``
+
+vi data/geneset/M2_markers.txt
+``
+IL4R 
+CCL4 
+CCL13 
+CCL20 
+CCL17 
+CCL18 
+CCL22 
+CCL24 
+LYVE1 
+VEGFA 
+VEGFB 
+VEGFC 
+VEGFD 
+EGF 
+CTSA 
+CTSB 
+CTSC 
+CTSD 
+TGFB1 
+TGFB2 
+TGFB3 
+MMP14 
+MMP19 
+MMP9 
+CLEC7A 
+WNT7B 
+FASL 
+TNFSF12 
+TNFSF8 
+CD276 
+VTCN1 
+MSR1 
+FN1 
+IRF4 
+``
+
+vi data/geneset/angiogenesis_markers.txt
+``
+CCND2 
+CCNE1 
+CD44 
+CXCR4 
+E2F3 
+EDN1 
+EZH2 
+FGF18 
+FGFR1 
+FYN 
+HEY1 
+ITGAV 
+JAG1 
+JAG2 
+MMP9 
+NOTCH1 
+PDGFA 
+PTK2 
+SPP1 
+STC1 
+TNFAIP6 
+TYMP 
+VAV2 
+VCAN 
+VEGFA 
+``
+
+##
+wd="/oak/stanford/groups/pritch/users/mineto/workstation/250425_Hyuncheol"
+setwd(wd)
+normcount<-read.table("data/DESeq2_varianceStabalizedTransformedData.txt", header=T, stringsAsFactor=F)
+
+file_list=dir("data/geneset/")
+file_list=file_list[grep("markers.txt", file_list)]
+summary<-data.frame()
+for(FILE in file_list){
+data<-read.table(paste0("data/geneset/", FILE), header=F, stringsAsFactor=F)
+gs=gsub("_markers.txt", "", FILE)
+data<-data.frame(gs=gs, data)
+colnames(data)[2]<-"genes"
+summary<-rbind(summary, data)
+}
+
+gs_selected<-split(
+  summary$genes, # The genes we want split into pathways
+  summary$gs # The pathways made as the higher levels of the list
+)
+
+# First let's create a mapped data frame we can join to the gene expression values
+library(dplyr)
+library(org.Hs.eg.db)
+mapped_df <- data.frame(
+  "GNAME" = mapIds(
+    # Replace with annotation package for the organism relevant to your data
+    org.Hs.eg.db,
+    keys = normcount$ensembl_id,
+    # Replace with the type of gene identifiers in your data
+    keytype = "ENSEMBL",
+    # Replace with the type of gene identifiers you would like to map to
+    column = "SYMBOL",
+    # This will keep only the first mapped value for each Ensembl ID
+    multiVals = "first"
+  )
+) %>%
+  # If an Ensembl gene identifier doesn't map to a Entrez gene identifier,
+  # drop that from the data frame
+  dplyr::filter(!is.na(GNAME)) %>%
+  # Make an `Ensembl` column to store the row names
+  tibble::rownames_to_column("Ensembl") %>%
+  # Now let's join the rest of the expression data
+  dplyr::inner_join(normcount, by = c("Ensembl" = "ensembl_id"))
+
+
+# First let's determine the gene means
+gene_means <- rowMeans(mapped_df %>% dplyr::select(-Ensembl, -GNAME))
+
+# Let's add this as a column in our `mapped_df`.
+mapped_df <- mapped_df %>%
+  # Add gene_means as a column called gene_means
+  dplyr::mutate(gene_means) %>%
+  # Reorder the columns so `gene_means` column is upfront
+  dplyr::select(Ensembl, GNAME, gene_means, dplyr::everything())
+
+filtered_mapped_df <- mapped_df %>%
+  # Sort so that the highest mean expression values are at the top
+  dplyr::arrange(dplyr::desc(gene_means)) %>%
+  # Filter out the duplicated rows using `dplyr::distinct()`
+  dplyr::distinct(GNAME, .keep_all = TRUE)
+
+  filtered_mapped_matrix <- filtered_mapped_df %>%
+  # GSVA can't the Ensembl IDs so we should drop this column as well as the means
+  dplyr::select(-Ensembl, -gene_means) %>%
+  # We need to store our gene identifiers as row names
+  tibble::column_to_rownames("GNAME") %>%
+  # Now we can convert our object into a matrix
+  as.matrix()
+
+##
+
+
+library(GSVA)
+gsva_results <- gsva(
+  filtered_mapped_matrix,
+  gs_selected,
+  method = "gsva",
+  kcdf = "Gaussian",
+  # Minimum gene set size
+  min.sz = 5,
+  # Maximum gene set size
+  max.sz = 2000,
+  # Compute Gaussian-distributed scores
+  mx.diff = TRUE,
+  # Don't print out the progress bar
+  verbose = FALSE
+)
+
+##
+dir.create("GSVA", showWarnings=F)
+write.table(data.frame(PATHWAY=row.names(gsva_results), gsva_results), "GSVA/GSVA_score_markergenes.txt", row.names=F, sep="\t", quote=F)
+
+##
+
+gsva_results_f<-gsva_results[,grep("NTD.D1|NTD.D7|Nuc.AAV.D1|Nuc.AAV.D7|EDV.AAV.D1|EDV.AAV.D7", colnames(gsva_results))]
+gsva_results_f<-gsva_results_f[,grep("D7", colnames(gsva_results_f))]
+colnames(gsva_results_f)<-gsub("X.", "", colnames(gsva_results_f))
+colnames(gsva_results_f)<-gsub(".d", "_", colnames(gsva_results_f))
+colnames(gsva_results_f)<-gsub(".D7", "", colnames(gsva_results_f))
+colnames(gsva_results_f)<-gsub("2NTD", "NTD", colnames(gsva_results_f))
+colnames(gsva_results_f)<-gsub("3Nuc", "Nuc", colnames(gsva_results_f))
+colnames(gsva_results_f)<-gsub("4EDV", "EDV", colnames(gsva_results_f))
+colnames(gsva_results_f)<-gsub(".AAV", "", colnames(gsva_results_f))
+
+pathway_heatmap <- pheatmap::pheatmap(gsva_results_f,
+  show_colnames = TRUE,
+  fontsize_row = 10,
+  scale="row" # Shrink the pathway labels a tad
+)
+
+pdf("GSVA/pathway_heatmap_markergenes_macrophage2.pdf", width=6, height=4)
+pathway_heatmap
+dev.off()
+##
+
+gsva_results_f<-gsva_results[,grep("NTD.D1|NTD.D7|Nuc.AAV.D1|Nuc.AAV.D7|EDV.AAV.D1|EDV.AAV.D7", colnames(gsva_results))]
+gsva_results_f<-gsva_results_f[,grep("D1", colnames(gsva_results_f))]
+colnames(gsva_results_f)<-gsub("X.", "", colnames(gsva_results_f))
+colnames(gsva_results_f)<-gsub(".d", "_", colnames(gsva_results_f))
+colnames(gsva_results_f)<-gsub(".D1", "", colnames(gsva_results_f))
+colnames(gsva_results_f)<-gsub("2NTD", "NTD", colnames(gsva_results_f))
+colnames(gsva_results_f)<-gsub("3Nuc", "Nuc", colnames(gsva_results_f))
+colnames(gsva_results_f)<-gsub("4EDV", "EDV", colnames(gsva_results_f))
+colnames(gsva_results_f)<-gsub(".AAV", "", colnames(gsva_results_f))
+colnames(gsva_results_f)<-gsub("0Nuc", "Nuc", colnames(gsva_results_f))
+colnames(gsva_results_f)<-gsub("1EDV", "EDV", colnames(gsva_results_f))
+
+pathway_heatmap <- pheatmap::pheatmap(gsva_results_f,
+  show_colnames = TRUE,
+  fontsize_row = 10,
+  scale="row" # Shrink the pathway labels a tad
+)
+
+pdf("GSVA/pathway_heatmap_markergenes_monocyte2.pdf", width=6, height=4)
+pathway_heatmap
+dev.off()
+
+
+##macrophage looks good
