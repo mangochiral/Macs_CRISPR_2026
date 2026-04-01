@@ -1,0 +1,169 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fnil\fcharset0 Monaco;}
+{\colortbl;\red255\green255\blue255;\red246\green246\blue246;}
+{\*\expandedcolortbl;;\cssrgb\c97255\c97255\c97255;}
+\margl1440\margr1440\vieww13700\viewh11380\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 ## Analysis of only screens repeats separately \
+\
+\
+#Analysis Donor 1 and Donor 2\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 conda activate mageckenv \
+pdevant@LAXUGI09205 ~ % DIR="/Users/pdevant"     \
+pdevant@LAXUGI09205 ~ % DIR_input="/Users/pdevant"  \
+pdevant@LAXUGI09205 ~ % mkdir -p $\{DIR\}/count_files \
+pdevant@LAXUGI09205 ~ % cd $\{DIR\}/count_files  \
+pdevant@LAXUGI09205 count_files % # Run mageck  \
+\
+mageck count -l $\{DIR\}/tf_library_sgRNAs.csv --output-prefix TF_ --fastq \\\
+$\{DIR\}/D1_High_S1_R1_001.fastq.gz \\\
+$\{DIR\}/D1_Low_S2_R1_001.fastq.gz \\\
+$\{DIR\}/D2_High_S3_R1_001.fastq.gz \\\
+$\{DIR\}/D2_Low_S4_R1_001.fastq.gz \\\
+--sample-label \\\
+D1_High,\\\
+D1_Low,\\\
+D2_High,\\\
+D2_Low\
+\
+\
+\
+\
+# Magic test\
+mkdir -p $\{DIR\}/results\
+cd $\{DIR\}/results\
+RUNDATE=$(date +%Y-%m-%d)\
+\
+COUNTFILE=TF_.count.txt\
+\
+# Run mageck\
+mageck test -k $\{DIR\}/count_files/$\{COUNTFILE\} -t D1_High -c D1_Low --sort-criteria pos --paired -n D1_hi_vs_low_$\{RUNDATE\}\
+\
+COUNTFILE=TF_.count.txt\
+\
+# Run mageck\
+mageck test -k $\{DIR\}/count_files/$\{COUNTFILE\} -t D2_High -c D2_Low --sort-criteria pos --paired -n D2_hi_vs_low_$\{RUNDATE\}\
+\
+\
+\
+\
+\
+## Analysis of Donor 3 and Donor 4\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf0 \
+conda activate mageckenv \
+DIR="/Users/pdevant"     \
+DIR_input="/Users/pdevant"  \
+mkdir -p $\{DIR\}/count_files_CD80-rep\
+cd $\{DIR\}/count_files_CD80-rep\
+\
+\
+\
+mageck count -l $\{DIR\}/tf_library_sgRNAs.csv --output-prefix CD80_TF_REP_ --fastq \\\
+$\{DIR\}/D3_high_S1_R1_001.fastq.gz \\\
+$\{DIR\}/D3_low_S2_R1_001.fastq.gz \\\
+$\{DIR\}/D4_high_S3_R1_001.fastq.gz \\\
+$\{DIR\}/D4_low_S4_R1_001.fastq.gz \\\
+--sample-label \\\
+D3_high,\\\
+D3_low,\\\
+D4_high,\\\
+D4_low\
+\
+\
+\
+# Magic test\
+\
+cd $\{DIR\}/count_files_CD80-rep\
+\
+COUNTFILE=CD80_TF_REP_.count.txt\
+\
+mkdir -p $\{DIR\}/results_CD80-REP\
+cd $\{DIR\}/results_CD80-REP\
+RUNDATE=$(date +%Y-%m-%d)\
+\
+# Run mageck paired for D3 and D4 together\
+mageck test -k $\{DIR\}/count_files_CD80-rep/$\{COUNTFILE\} -t D3_high,D4_high -c D3_low,D4_low --sort-criteria pos --paired -n CD80_D3-D4_hi_vs_low$\{RUNDATE\}\
+\
+# Run mageck only for D3\
+\
+mageck test -k $\{DIR\}/count_files_CD80-rep/$\{COUNTFILE\} -t D3_high -c D3_low --sort-criteria pos --paired -n CD80_D3_hi_vs_low$\{RUNDATE\}\
+\
+\
+# Run mageck only for D4\
+\
+mageck test -k $\{DIR\}/count_files_CD80-rep/$\{COUNTFILE\} -t D4_high -c D4_low --sort-criteria pos --paired -n CD80_D4_hi_vs_low$\{RUNDATE\}\
+\
+\
+\
+## Analysis of All for donors together\
+\
+\
+conda activate mageckenv \
+DIR="/Users/pdevant"     \
+DIR_input="/Users/pdevant"  \
+mkdir -p $\{DIR\}/count_files_CD80_All-donors\
+cd $\{DIR\}/count_files_CD80_All-donors\
+\
+\
+\
+mageck count -l $\{DIR\}/tf_library_sgRNAs.csv --output-prefix CD80_TF_all_donors --fastq \\\
+$\{DIR\}/D1_High_S1_R1_001.fastq.gz \\\
+$\{DIR\}/D1_Low_S2_R1_001.fastq.gz \\\
+$\{DIR\}/D2_High_S3_R1_001.fastq.gz \\\
+$\{DIR\}/D2_Low_S4_R1_001.fastq.gz \\\
+$\{DIR\}/D3_high_S1_R1_001.fastq.gz \\\
+$\{DIR\}/D3_low_S2_R1_001.fastq.gz \\\
+$\{DIR\}/D4_high_S3_R1_001.fastq.gz \\\
+$\{DIR\}/D4_low_S4_R1_001.fastq.gz \\\
+--sample-label \\\
+D1_high,\\\
+D1_low,\\\
+D2_high,\\\
+D2_low,\\\
+D3_high,\\\
+D3_low,\\\
+D4_high,\\\
+D4_low\
+\
+\
+# Magic test\
+\
+cd $\{DIR\}/count_files_CD80_All-donors\
+\
+COUNTFILE=CD80_TF_all_donors.count.txt\
+\
+mkdir -p $\{DIR\}/results_CD80_All-donors\
+cd $\{DIR\}/results_CD80_All-donors\
+RUNDATE=$(date +%Y-%m-%d)\
+\
+# Run mageck paired for D1, D2, D3, D4\
+mageck test -k $\{DIR\}/count_files_CD80_All-donors/$\{COUNTFILE\} -t D1_high,D2_high,D3_high,D4_high -c D1_low,D2_low,D3_low,D4_low --sort-criteria pos --paired -n CD80_D1234_hi_vs_low$\{RUNDATE\}\
+\
+\
+\
+## Rerun Magic test with Higher permutation number \'97> Improve FDR range\
+\
+\
+conda activate mageckenv \
+DIR="/Users/pdevant"     \
+DIR_input="/Users/pdevant"\
+\
+cd $\{DIR\}/count_files_CD80_All-donors\
+\
+COUNTFILE=CD80_TF_all_donors.count.txt\
+\
+mkdir -p $\{DIR\}/results_CD80_All-donors_perm100k\
+cd $\{DIR\}/results_CD80_All-donors_perm100k\
+RUNDATE=$(date +%Y-%m-%d)\
+\
+\
+#Run mageck paired for D1, D2, D3, D4\
+mageck test -k $\{DIR\}/count_files_CD80_All-donors/$\{COUNTFILE\} -t D1_high,D2_high,D3_high,D4_high -c D1_low,D2_low,D3_low,D4_low --sort-criteria pos --paired 
+\f1 \cb2 \expnd0\expndtw0\kerning0
+--additional-rra-parameters "--permutation 100000"
+\f0 \cb1 \kerning1\expnd0\expndtw0  -n CD80_D1234_hi_vs_low$\{RUNDATE\}\
+}
