@@ -1,1 +1,248 @@
 
+##250424
+##run GSEA for GO categories using logFC.
+##and make scatter plot comparison between conditions.
+##reference: https://learn.gencore.bio.nyu.edu/rna-seq-analysis/gene-set-enrichment-analysis/
+
+wd="/oak/stanford/groups/pritch/users/mineto/workstation/250425_Hyuncheol"
+setwd(wd)
+
+edv_mo<-read.table("data/NTD_None_D1_monocyte-vs-EDV_AAVS1_D1_monocyte.txt", header=T, stringsAsFactor=F)
+nuc_mo<-read.table("data/NTD_None_D1_monocyte-vs-Nuc_AAVS1_D1_monocyte.txt", header=T, stringsAsFactor=F)
+
+edv_mac<-read.table("data/NTD_None_D7_macrophage-vs-EDV_AAVS1_D7_macrophage.txt", header=T, stringsAsFactor=F)
+nuc_mac<-read.table("data/NTD_None_D7_macrophage-vs-Nuc_AAVS1_D7_macrophage.txt", header=T, stringsAsFactor=F)
+
+
+library(msigdbr)
+library(fgsea)
+library(dplyr)
+library(ggplot2)
+library(tibble)
+
+##
+
+
+# 1. Retrieve Hallmark gene sets for Homo sapiens
+hallmarks <- msigdbr(species = "Homo sapiens", category = "H") %>%
+  select(gs_name, ensembl_gene) %>%
+  split(x = .$ensembl_gene, f = .$gs_name)
+
+library(org.Hs.eg.db)
+
+keys<-keys(org.Hs.eg.db,keytype="GOALL")
+go_genesets <- AnnotationDbi::select(org.Hs.eg.db, keytype="GOALL", columns="ENSEMBL", keys=keys)
+
+go_selected<-split(
+  go_genesets$ENSEMBL, # The genes we want split into pathways
+  go_genesets$GOALL # The pathways made as the higher levels of the list
+)
+
+allgeneset <-c(hallmarks, go_selected)
+
+##
+# 3. Create a ranking using the Wald statistic to avoid ties
+# Load necessary libraries
+df=edv_mo
+
+library(dplyr)
+ranking <- df %>%
+  filter(!is.na(log2FoldChange)) %>%
+  arrange(desc(abs(stat))) %>%
+  filter(!duplicated(gene)) %>%
+  arrange(desc(stat)) %>%
+  distinct( ensembl_id, .keep_all = TRUE) %>%
+  dplyr::select( ensembl_id, stat) %>%
+  deframe()
+
+# 4. Run fgsea using the multilevel method
+fgseaRes <- fgsea(
+  pathways = allgeneset,
+  stats    = ranking,
+  minSize  = 20,   # minimum gene set size
+  maxSize  = 1000   # maximum gene set size
+)
+
+res<-as.data.frame(fgseaRes)[,1:7]
+write.table(res, "GSEA_output/edv_mo_gsea_result.txt", row.names=F, sep="\t", quote=F)
+
+
+##
+
+df=nuc_mo
+
+
+##
+# 3. Create a ranking using the Wald statistic to avoid ties
+# Load necessary libraries
+
+library(dplyr)
+ranking <- df %>%
+  filter(!is.na(log2FoldChange)) %>%
+  arrange(desc(abs(stat))) %>%
+  filter(!duplicated(gene)) %>%
+  arrange(desc(stat)) %>%
+  distinct( ensembl_id, .keep_all = TRUE) %>%
+  dplyr::select( ensembl_id, stat) %>%
+  deframe()
+
+# 4. Run fgsea using the multilevel method
+fgseaRes <- fgsea(
+  pathways = allgeneset,
+  stats    = ranking,
+  minSize  = 20,   # minimum gene set size
+  maxSize  = 1000   # maximum gene set size
+)
+
+res<-as.data.frame(fgseaRes)[,1:7]
+write.table(res, "GSEA_output/nuc_mo_gsea_result.txt", row.names=F, sep="\t", quote=F)
+
+###
+
+df=edv_mac
+
+
+library(dplyr)
+ranking <- df %>%
+  filter(!is.na(log2FoldChange)) %>%
+  arrange(desc(abs(stat))) %>%
+  filter(!duplicated(gene)) %>%
+  arrange(desc(stat)) %>%
+  distinct( ensembl_id, .keep_all = TRUE) %>%
+  dplyr::select( ensembl_id, stat) %>%
+  deframe()
+
+# 4. Run fgsea using the multilevel method
+fgseaRes <- fgsea(
+  pathways = allgeneset,
+  stats    = ranking,
+  minSize  = 20,   # minimum gene set size
+  maxSize  = 1000   # maximum gene set size
+)
+
+res<-as.data.frame(fgseaRes)[,1:7]
+write.table(res, "GSEA_output/edv_mac_gsea_result.txt", row.names=F, sep="\t", quote=F)
+
+
+##
+
+df=nuc_mac
+
+library(dplyr)
+ranking <- df %>%
+  filter(!is.na(log2FoldChange)) %>%
+  arrange(desc(abs(stat))) %>%
+  filter(!duplicated(gene)) %>%
+  arrange(desc(stat)) %>%
+  distinct( ensembl_id, .keep_all = TRUE) %>%
+  dplyr::select( ensembl_id, stat) %>%
+  deframe()
+
+# 4. Run fgsea using the multilevel method
+fgseaRes <- fgsea(
+  pathways = allgeneset,
+  stats    = ranking,
+  minSize  = 20,   # minimum gene set size
+  maxSize  = 1000   # maximum gene set size
+)
+
+res<-as.data.frame(fgseaRes)[,1:7]
+write.table(res, "GSEA_output/nuc_mac_gsea_result.txt", row.names=F, sep="\t", quote=F)
+
+##
+##plot
+##1. monocyte, nuc vs edv
+
+df1<-read.table("GSEA_output/edv_mo_gsea_result.txt", header=T, stringsAsFactor=F)
+df2<-read.table("GSEA_output/nuc_mo_gsea_result.txt", header=T, stringsAsFactor=F)
+
+colnames(df1)[2:7]<-paste0("edv_", colnames(df1)[2:7])
+colnames(df2)[2:7]<-paste0("nuc_", colnames(df2)[2:7])
+
+df<-merge(df1, df2, by="pathway")
+df<-na.omit(df)
+df<-df[grep("HALLMARK", df$pathway),]
+
+target<- ifelse (df$edv_padj < 0.01, 1, ifelse (df$nuc_padj<0.01, 1, 0)) 
+
+df2<-df[target==1,]
+dim(df2)
+##1065 geneset
+
+library(GO.db)
+goterms <- Term(df2$pathway)
+#df2<-data.frame(df2, label=goterms)
+df2<-data.frame(df2, label=df2$pathway)
+
+target<-unique(df2$label[ abs(df2$edv_NES) > sort(abs(df2$edv_NES), decreasing=T)[5]])
+target<-unique(c(target, df2$label[abs(df2$nuc_NES) > sort(abs(df2$nuc_NES), decreasing=T)[5]]))
+tmp<-df2[df2$nuc_NES * df2$edv_NES < 0 , ]
+if(nrow(tmp)>5){
+target<-unique(c(target, tmp$label[abs(tmp$nuc_NES) > sort(abs(tmp$nuc_NES), decreasing=T)[5]]))
+target<-unique(c(target, tmp$label[abs(tmp$edv_NES) > sort(abs(tmp$edv_NES), decreasing=T)[5]]))
+} else {
+target<-unique(c(target, tmp$label))
+}
+
+target<-c(target, "HALLMARK_P53_PATHWAY", "HALLMARK_APOPTOSIS")
+df2$label[!is.element(df2$label, target)]<-""
+df2$label<-gsub("HALLMARK_", "", df2$label)
+
+library(ggplot2)
+library(ggrepel)
+g<-ggplot(df2, aes(x=edv_NES, y=nuc_NES, label=label))
+g<-g +  theme_set(theme_classic(base_family = "Helvetica", base_size=20))
+g<-g + geom_point(size=4)
+g<-g + geom_vline(xintercept=0)
+g<-g + geom_hline(yintercept=0)
+g<-g + geom_text_repel(max.overlaps=100, point.size=4)
+ggsave(plot=g, "figure/GO_comp_monocyte_nuc_vs_edv.pdf", width=8, height=8)
+
+
+##2. macrophage, nuc vs edv
+
+df1<-read.table("GSEA_output/edv_mac_gsea_result.txt", header=T, stringsAsFactor=F)
+df2<-read.table("GSEA_output/nuc_mac_gsea_result.txt", header=T, stringsAsFactor=F)
+
+colnames(df1)[2:7]<-paste0("edv_", colnames(df1)[2:7])
+colnames(df2)[2:7]<-paste0("nuc_", colnames(df2)[2:7])
+
+df<-merge(df1, df2, by="pathway")
+df<-na.omit(df)
+df<-df[grep("HALLMARK", df$pathway),]
+
+target<- ifelse (df$edv_padj < 0.01, 1, ifelse (df$nuc_padj<0.01, 1, 0)) 
+
+df2<-df[target==1,]
+dim(df2)
+## geneset
+
+library(GO.db)
+goterms <- Term(df2$pathway)
+#df2<-data.frame(df2, label=goterms)
+df2<-data.frame(df2, label=df2$pathway)
+
+target<-unique(df2$label[ abs(df2$edv_NES) > sort(abs(df2$edv_NES), decreasing=T)[5]])
+target<-unique(c(target, df2$label[abs(df2$nuc_NES) > sort(abs(df2$nuc_NES), decreasing=T)[5]]))
+tmp<-df2[df2$nuc_NES * df2$edv_NES < 0 , ]
+if(nrow(tmp)>5){
+target<-unique(c(target, tmp$label[abs(tmp$nuc_NES) > sort(abs(tmp$nuc_NES), decreasing=T)[5]]))
+target<-unique(c(target, tmp$label[abs(tmp$edv_NES) > sort(abs(tmp$edv_NES), decreasing=T)[5]]))
+} else {
+target<-unique(c(target, tmp$label))
+}
+
+
+df2$label[!is.element(df2$label, target)]<-""
+df2$label<-gsub("HALLMARK_", "", df2$label)
+
+library(ggplot2)
+library(ggrepel)
+g<-ggplot(df2, aes(x=edv_NES, y=nuc_NES, label=label))
+g<-g +  theme_set(theme_classic(base_family = "Helvetica", base_size=20))
+g<-g + geom_point(size=4)
+g<-g + geom_vline(xintercept=0)
+g<-g + geom_hline(yintercept=0)
+g<-g + geom_text_repel(max.overlaps=100, point.size=4)
+ggsave(plot=g, "figure/GO_comp_macrophage_nuc_vs_edv.pdf", width=8, height=8)
+
