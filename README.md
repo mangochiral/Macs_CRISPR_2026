@@ -106,5 +106,32 @@ Output files:
 - `results/DE_t_on_TNF.t_vs_singleNTC.csv`: effects of perturbations on TNF expression (testing for cells with each perturbed gene vs cells with single NTC guide)
 
 
+#### X. Identifcation of regulators of macrophage-relevant genes
+
+See `Regulator heatmap.ipynb` - plots of perturbations with significant effects on a set of 30 canonical macrophage genes
+
+Input files:
+- `DE_Mac_Ctrl_anndata.h5ad`: DESeq2 results for Ctrl condition
+- `DE_Mac_LPS_anndata.h5ad`: DESeq2 results for LPS condition
+
+Output files:
+- See plots in in notebook
+
+#### X. GSEA on perturbation clusters
+
+See `Cluster_GSEA.ipynb` - Gene Set Enrichment Analysis for downstream genes that are differentially regulated each cluster of perturbations based on mean z-score ranking
+
+Input files:
+- `DE_Mac_Ctrl_anndata.h5ad`: DESeq2 results for Ctrl condition
+- `DE_Mac_LPS_anndata.h5ad`: DESeq2 results for LPS condition
+
+Output files:
+- `results/LPS_cluster_downstream_rankings_NEWclusters`
+- `results/CTRL_cluster_downstream_rankings_NEWclusters`
+- `results/cluster_0_gsea_prerank_results.csv`
+- `results/cluster_1_gsea_prerank_results.csv`
+- `results/cluster_2_gsea_prerank_results.csv`
+- `results/cluster_3_gsea_prerank_results.csv`
+- See plots in notebook
 
 
