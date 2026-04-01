@@ -4,11 +4,10 @@
 #Analysis Donor 1 and Donor 2
 
 conda activate mageckenv 
-pdevant@LAXUGI09205 ~ % DIR="/Users/pdevant"     
-pdevant@LAXUGI09205 ~ % DIR_input="/Users/pdevant"  
-pdevant@LAXUGI09205 ~ % mkdir -p ${DIR}/count_files 
-pdevant@LAXUGI09205 ~ % cd ${DIR}/count_files  
-pdevant@LAXUGI09205 count_files % # Run mageck  
+DIR="/Users/pdevant"     
+DIR_input="/Users/pdevant"  
+mkdir -p ${DIR}/count_files 
+cd ${DIR}/count_files  
 
 mageck count -l ${DIR}/tf_library_sgRNAs.csv --output-prefix TF_ --fastq \
 ${DIR}/D1_High_S1_R1_001.fastq.gz \
