@@ -22,7 +22,7 @@ import pytest
 
 warnings.filterwarnings('ignore')
 
-import preprocess as ppr
+import preprocess_adata as ppr
 
 def get_sgrna_qc_metrics_macs(crispr_a, min_sgrna_counts=3, q=0.05):
     var_cols = ['sgrna_id','perturbed_gene_name', 'feature_types', 'genome', 'pattern', 'read', 'sequence',

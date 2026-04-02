@@ -19,7 +19,7 @@ The preprocessing workflow includes:
 ├── 1_preprocessing/
 │   ├── preprocess_macs.py
 │   ├── preprocess_adata.py                # importing modules
-│   ├── basic_preprocessing.py       # for parallel run
+│   ├── basic_preprocessing_macs.py       # for parallel run
 ```
 
 > [`preprocess_adata.py`](https://github.com/mangochiral/PerturbSeq_Analysis_pipeline/blob/main/src/1_preprocessing/preprocess_adata.py) is sourced from the PerturbSeq Analysis Pipeline repository.
