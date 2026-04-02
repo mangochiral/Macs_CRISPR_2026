@@ -22,7 +22,7 @@ The preprocessing workflow includes:
 │   ├── basic_preprocessing.py       # for parallel run
 ```
 
-> [`preprocess_adata.py`]([https://github.com/mangochiral/PerturbSeq_Analysis_pipeline](https://github.com/mangochiral/PerturbSeq_Analysis_pipeline/blob/main/src/1_preprocessing/preprocess_adata.py)) is sourced from the PerturbSeq Analysis Pipeline repository.
+> [`preprocess_adata.py`](https://github.com/mangochiral/PerturbSeq_Analysis_pipeline](https://github.com/mangochiral/PerturbSeq_Analysis_pipeline/blob/main/src/1_preprocessing/preprocess_adata.py) is sourced from the PerturbSeq Analysis Pipeline repository.
 
 ## Input Data
 The experiment_info.csv has sample info about condition, lane, donor, treatment, etc
