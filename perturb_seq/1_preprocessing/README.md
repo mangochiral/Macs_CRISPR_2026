@@ -18,7 +18,7 @@ The preprocessing workflow includes:
 .
 ├── 1_preprocessing/
 │   ├── preprocess_macs.py
-│   ├── preprocess.py                # importing modules
+│   ├── preprocess_adata.py                # importing modules
 │   ├── basic_preprocessing.py       # for parallel run
 ```
 
