@@ -5,6 +5,7 @@ Analysis notebooks for quality control and guide efficiency assessment of a CRIS
 ## Guide Assignment
 Gaussian-Poisson mixed model was used to assign guide to cells. The cut off umi counts cut limits for a individual guides are recorded in csv file and for individual cells umi counts for guide assigned are recorded, (for multi guide cells, the guide with highest umi counts is recorded).
 > guide_assignment: [guide_assignment.py](https://github.com/mangochiral/PerturbSeq_Analysis_pipeline/blob/main/src/2_guide-assignment/guide_assignment_parallel.py)
+
 Input files : `<sample_name>_crispr_preprocessed.h5ad`
 Output files: 	- file1: `{sample_name}_gex_guide.h5ad`
 		- file2: `guide_assignment.csv`
@@ -14,6 +15,7 @@ Output files: 	- file1: `{sample_name}_gex_guide.h5ad`
 
 ## Quality control: To check for guide efficiency, expression levels of perturbed genes were used to test statistics
 > [guide qc](https://github.com/mangochiral/PerturbSeq_Analysis_pipeline/blob/main/src/2_guide-assignment/qc_stats_heavy_load.py)
+
 Input files :`{sample_name}_gex_guide.h5ad`
 Output files: `{sample_name}_guide_count_info.csv`
 
