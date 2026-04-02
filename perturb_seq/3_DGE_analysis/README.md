@@ -21,7 +21,7 @@ Downstream visualization
 
 ---
 
-## (Optional) Doublet Removal in Multi-guide Cells (`Thresholding_doublet_in_multiguide.ipynb`)
+### (Optional) Doublet Removal in Multi-guide Cells (`Thresholding_doublet_in_multiguide.ipynb`)
 
 If multi-guide–assigned cells are used, this notebook should be run **prior to Step 1** to identify and remove likely doublets from the multi-guide pool.
 
@@ -32,8 +32,8 @@ If multi-guide–assigned cells are used, this notebook should be run **prior to
 
 | | File | Description |
 |---|---|---|
-| **In** | `<sample_name>_gex_guide.h5ad` |
-| **Out** | `<sample_name>_singlets.h5ad` |
+| **In** | `<sample_name>_gex_guide.h5ad` | guide assigned gene expression anndata
+| **Out** | `<sample_name>_singlets.h5ad` | single guide gene expression anndata
 
 
 **Step 2 — Per-lane pseudobulk**: Aggregate filtered cells into pseudobulk profiles (sum of raw counts) grouped by condition-level covariates.
@@ -69,8 +69,8 @@ python3 pseudobulk_by_lane.py \
 
 | | File | Description |
 |---|---|---|
-| **In** | `<sample_name>_singlets.h5ad`  
-| **Out** | `<sample_name>_DE_pseudobulk.h5ad`
+| **In** | `<sample_name>_singlets.h5ad`  | single guide gene expression anndata
+| **Out** | `<sample_name>_DE_pseudobulk.h5ad` | pseudobulk anndata h5ad objects at sample and lane level
 
 
 **Step 3 — Merge, QC & prep for DE**: Concatenate per-lane pseudobulk files, apply quality filters (minimum cells, total-count outliers, replicate thresholds), select features, and write the final DE-ready h5ad.
@@ -79,10 +79,10 @@ python3 pseudobulk_by_lane.py \
 
 | | File | Description |
 |---|---|---|
-| **In** | `<sample_name>_DE_pseudobulk.h5ad` |
-| **Out** | `merged_DE_pseudobulk.h5ad` |
-| **Out** | `<condition>_DE_pseudobulk_for_test.h5ad` | 
-| **Out** | `DE_feature_selection_vars.csv` | 
+| **In** | `<sample_name>_DE_pseudobulk.h5ad` | pseudobulk anndata h5ad objects at sample and lane level
+| **Out** | `merged_DE_pseudobulk.h5ad` | merged  pseudobulk anndata h5ad object
+| **Out** | `<condition>_DE_pseudobulk_for_test.h5ad` | split by condition of pseudobulk anndata h5ad with filtering to be test perturbation
+| **Out** | `DE_feature_selection_vars.csv` | HVG to be gone DE upon
 ---
 
 ## Step 4 — DESeq2 on Pseudobulk ([Deseq2_pseudobulk.py](https://github.com/mangochiral/PerturbSeq_Analysis_pipeline/tree/main/src/4_DGE_analysis))
