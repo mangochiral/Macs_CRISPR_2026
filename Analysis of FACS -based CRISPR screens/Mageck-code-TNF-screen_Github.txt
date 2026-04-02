@@ -1,0 +1,57 @@
+
+conda activate mageckenv 
+DIR="/Users/pdevant"     
+ DIR_input="/Users/pdevant"  
+mkdir -p ${DIR}/count_files3 
+ cd ${DIR}/count_files3 
+ 
+
+mageck count -l ${DIR}/Myeloid_lib_sgRNAs.csv --output-prefix TNF --fastq \
+${DIR}/D1_high_S1_R1_001.fastq.gz \
+${DIR}/D1_low_S2_R1_001.fastq.gz \
+${DIR}/D2_high_S3_R1_001.fastq.gz \
+${DIR}/D2_low_S4_R1_001.fastq.gz \
+--sample-label \
+D1_High,\
+D1_Low,\
+D2_High,\
+D2_Low
+
+
+## Analysis of Donor 1 and Donor 2 separately
+
+# Magic test
+mkdir -p ${DIR}/results_TNF2
+cd ${DIR}/results_TNF2
+RUNDATE=$(date +%Y-%m-%d)
+
+COUNTFILE=TNF.count.txt
+
+# Run mageck
+mageck test -k ${DIR}/count_files3/${COUNTFILE} -t D1_High -c D1_Low --sort-criteria pos --paired -n D1_hi_vs_low_${RUNDATE}
+
+COUNTFILE=TNF.count.txt
+
+# Run mageck
+mageck test -k ${DIR}/count_files3/${COUNTFILE} -t D2_High -c D2_Low --sort-criteria pos --paired -n D2_hi_vs_low_${RUNDATE}
+
+
+
+## Donor 1 and Donor 2 paired analysis with 100k permutations
+
+conda activate mageckenv
+
+DIR="/Users/pdevant"     
+ DIR_input="/Users/pdevant"  
+ cd ${DIR}/count_files3
+
+mkdir -p ${DIR}/results_TNF_paired_perm100000
+cd ${DIR}/results_TNF_paired_perm100000
+RUNDATE=$(date +%Y-%m-%d)
+
+COUNTFILE=TNF.count.txt
+
+mageck test -k ${DIR}/count_files3/${COUNTFILE} -t D1_High,D2_High -c D1_Low,D2_Low  --sort-criteria pos --paired --additional-rra-parameters "--permutation 100000" -n Paired_hi_vs_low_${RUNDATE}
+
+
+
