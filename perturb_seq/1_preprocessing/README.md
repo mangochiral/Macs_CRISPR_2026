@@ -22,7 +22,7 @@ The preprocessing workflow includes:
 │   ├── basic_preprocessing.py       # for parallel run
 ```
 
-> [`preprocess.py`](https://github.com/mangochiral/PerturbSeq_Analysis_pipeline) is sourced from the PerturbSeq Analysis Pipeline repository.
+> [`preprocess_adata.py`]([https://github.com/mangochiral/PerturbSeq_Analysis_pipeline](https://github.com/mangochiral/PerturbSeq_Analysis_pipeline/blob/main/src/1_preprocessing/preprocess_adata.py)) is sourced from the PerturbSeq Analysis Pipeline repository.
 
 ## Input Data
 The experiment_info.csv has sample info about condition, lane, donor, treatment, etc
@@ -43,8 +43,8 @@ Initial QC was done to remove low quality cells i.e, high mitochondrial percent 
    scripts 
    bash script for slurm job
    ```
-        #!/bin/bash
-    	#SBATCH --job-name=preprocessing
+    #!/bin/bash
+    #SBATCH --job-name=preprocessing
 	#SBATCH --time=1:00:00
 	#SBATCH --mem=100G
 	#SBATCH --cpus-per-task=16         # <-- 16 CPUs per job
