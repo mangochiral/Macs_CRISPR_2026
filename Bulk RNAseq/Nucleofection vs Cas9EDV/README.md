@@ -1,7 +1,7 @@
 
   Analysis of bulkRNA seq data from primary human macrophages edited via nucleofection vs. Cas9EDV for AAVS1 loci.
 
-  Bulk RNA seq analysis 
+
 
   Fastq files submitted to GEO
   
